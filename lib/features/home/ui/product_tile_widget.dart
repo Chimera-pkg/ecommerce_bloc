@@ -1,16 +1,22 @@
+import 'package:ecommerce_bloc/features/home/bloc/home_bloc.dart';
 import 'package:ecommerce_bloc/features/home/models/home_product_data_model.dart';
 import 'package:flutter/material.dart';
 
 class ProductTileWidget extends StatelessWidget {
   final ProductDataModel productDataModel;
-  const ProductTileWidget({super.key, required this.productDataModel});
+  final HomeBloc homeBloc;
+  const ProductTileWidget(
+      {super.key, required this.productDataModel, required this.homeBloc});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
-      child: Column(children: [
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           height: 200,
           width: double.maxFinite,
@@ -19,8 +25,38 @@ class ProductTileWidget extends StatelessWidget {
                   fit: BoxFit.cover,
                   image: NetworkImage(productDataModel.imageUrl))),
         ),
-        Text(productDataModel.name),
+        const SizedBox(height: 20),
+        Text(
+          productDataModel.name,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         Text(productDataModel.description),
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "\$" + productDataModel.price.toString(),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      homeBloc.add(HomeProductCartButtonClickedEvent(
+                          clickedProduct: productDataModel));
+                    },
+                    icon: Icon(Icons.favorite_border)),
+                IconButton(
+                    onPressed: () {
+                      homeBloc.add(HomeProductCartButtonClickedEvent(
+                          clickedProduct: productDataModel));
+                    },
+                    icon: Icon(Icons.shopping_bag_outlined)),
+              ],
+            )
+          ],
+        ),
       ]),
     );
   }
